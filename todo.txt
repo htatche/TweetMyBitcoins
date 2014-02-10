@@ -1,0 +1,7 @@
+== TODO LIST ==
+
+V - Get an access token from twitter
+V - Read the last direct messages from twitter and store them in-memory
+V - Parse a message in search for a valid public btc address
+V - Call blockchain.js and retreive the btcs of this address
+- Answer the user of this message
