@@ -1,7 +1,10 @@
 == TODO LIST ==
 
-V - Get an access token from twitter
-V - Read the last direct messages from twitter and store them in-memory
-V - Parse a message in search for a valid public btc address
-V - Call blockchain.js and retreive the btcs of this address
-- Answer the user of this message
+- Question -
+
+Question could be an object
+	- It is a json
+	- It contains a human string question
+	- It needs to be parsed
+	- It can be different types of orders
+	- It has to be answered

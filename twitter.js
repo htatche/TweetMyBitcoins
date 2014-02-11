@@ -1,8 +1,8 @@
-var OAuth = require("OAuth");
-var Q     = require("q");
-var blockchain   = require('./blockchain.js');
+var OAuth = require("OAuth"),
+    Q     = require("q"),
+    utilities = require('./utilities.js');    
+    blockchain = require('./blockchain.js');
 
-// Twitter application-only authentication
 var oauth;
 
 var consumer_key         = "f6UUux737tKxq9zb94q8gQ",
@@ -14,97 +14,74 @@ var consumer_key         = "f6UUux737tKxq9zb94q8gQ",
     request_token_url    = "https://api.twitter.com/oauth/request_token",
     access_token_url     = "https://api.twitter.com/oauth/access_token"; 
 
-var streamDirectMessages = function() {
-  var user_stream_url = "https://userstream.twitter.com/1.1/user.json",
+var streaming = function() {
+  var user_stream_url = "https://userstream.twitter.com/1.1/user.json";
 
-      request         = oauth.get(user_stream_url,
-                                  access_token,
-                                  secret_access_token);  
+  var req = oauth.get(user_stream_url,
+                      access_token,
+                      secret_access_token);  
 
-  request.addListener("response", function (response) {
+  req.addListener("response", function (res) {
 
-    response.setEncoding("utf8");
+    res.setEncoding("utf8");
 
-    response.addListener("data", function (data) {
-      var json; 
+    res.addListener("data", function (data) {
+      console.log("I received a bunch of data !");
+      console.log(data);      
 
       try {
-        console.log("I received a bunch of data !");
-        console.log(data);
-
-        json = JSON.parse(data);
-      } catch (e) { 
-        return;
-      }        
+        var json = JSON.parse(data);
+      } catch (e) { return; }        
 
       if (json.hasOwnProperty("text"))
-        parseDirectMessage(json);
+        parseStatus(json);
 
     });
 
-    response.addListener("end", function () {
-      console.log("End of communication");
-      return
+    res.addListener("end", function () {
+      throw new Error("End of streaming with Twitter");
     });
 
-  });
-
-  request.end();
+  }).end();
 };
 
-var extractBitcoinAddress = function(str) {
-  var regxp = /([13][1-9A-HJ-NP-Za-km-z]{26,33})/,
-      address;    
+var parseStatus = function(json) {
 
-  if (str = str.match(regxp)) {
-    return str[0];
-  } else {
-    throw new Error("Invalid bitcoin address");
-  }
-}
-
-var parseDirectMessage = function(json) {
-  var str = json.text,
-      address;     
-
-  if (str.match(/.*balance.*/)) {
-    address = extractBitcoinAddress(str);
-
-    blockchain.getBalance(address)
-    .then(
-      function(satoshis) {
-        var bitcoins = satoshis * 0.00000001;
-        // The status id param is too big for a JS Number
-        var status_id = json.id_str; 
-        var user_id = json.user.id;
-        var screen_name = json.user.screen_name;
-
-        var msg = "@" + screen_name + " Hey mate ! This wallet has " + bitcoins.toString() + " bitcoins :-)";
-
-        answerStatus(status_id, msg);
+  if (json.text.match(/.*balance.*/)) {
+    
+    generateReplyToBalance(json).then(
+      function(str) {
+        answerStatus(json.id_str, str);
       },
-      function(error) {   
-        throw error;
-      }
-    ) 
+      function(e) {
+        throw e; 
+      }      
+    )
   }  
+
 }
 
-var answerDirectMessage = function(id, user_id, msg) {
-  var url = "https://api.twitter.com/1.1/direct_messages/new.json";
-  var params = "?user_id=" + user_id + "&text=" + encodeURIComponent(msg);
+var generateReplyToBalance = function(json) {
+  var deferred = Q.defer();
+  var address = utilities.extractBitcoinAddress(json.text);
 
-  url = url + params;
+  blockchain.getBalance(address)
+  .then(
+    function(satoshis) {
+      var bitcoins = satoshis * 0.00000001;
 
-  oauth.post(url,
-             access_token,
-             secret_access_token,
-             function(e,data,res) {
-                console.log("Error: ");
-                console.log(e);
+      var msg = "@" + json.user.screen_name +
+                " Hey mate ! This wallet has " +
+                bitcoins.toString() + " bitcoins :-)";
 
-  });
+      deferred.resolve(msg);
+    },
+    function(e) {   
+      deferred.reject(e);
+    }
+  ) 
 
+  return deferred.promise;
 }
 
 var answerStatus = function(status_id, msg) {
@@ -117,12 +94,9 @@ var answerStatus = function(status_id, msg) {
              params,
              function(e,data,res) { 
                 console.log("Message posted !!");
-               // console.log("Error: ");
-               // console.log(e);
-               console.log("Data: ");
-               console.log(data);
+             }
 
-  });
+  );
 
 }
 
@@ -137,7 +111,7 @@ oauth = new OAuth.OAuth(
 );
 
 
-streamDirectMessages(); 
+streaming(); 
 
 // answerStatus("432512603932217344", "@dtweetmybitcoin Blahbldwewe-asdasdasdaasdhb!lah !")
-//parseDirectMessage("What is the balance of 1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX ?");
+// parseStatus("What is the balance of 1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX ?");
