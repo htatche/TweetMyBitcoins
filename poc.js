@@ -9,12 +9,13 @@ var Status = function(json) {
 
   _this.isQuestion = function() {
     // Determine if it's a question
+    // regxp with What/How 
   }
 
   return _this;
 }
 
-var Reply = function(status_id, question_type) {
+var Answer = function(status_id, question_type) {
   var _this = this;
 
 	_this.url    = "http://api.twitter.com/...";
@@ -64,23 +65,21 @@ var Question = function(status) {
 	}
 
 	_this.getReply: function() {
-		var status_id = status.id;
+    var question_type =_this.type;
 
-		return new Reply(status, _this.type);
+		return new Reply(status.id, _this.type);
 	}
 
 	_this.answer: function() {
-		this.getReply.send()
+		_this.getReply.send();
 	}
 
 	_this.getDirectMessageReply: function(answer_type) {
-		var status_id = status.id;
-
-		return new DirectMessage(user_id, msg);
+		return new DirectMessage(status.id, user.id, msg);
 	}		
 
 	this.privateAnswer: function() {
-		this.directMessageReply.send()
+		_this.directMessageReply.send();
 	}	
 
   this.setType();
@@ -92,7 +91,7 @@ exports.parseData = function(json) {
 
   var status = new Status(json);  
 
-  if (status.isQuestion) {
+  if (status.isQuestion()) {
     var question = new Question(json);
 
     question.answer();
