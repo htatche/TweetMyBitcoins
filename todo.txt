@@ -1,21 +1,12 @@
 == Specs (brainstorming state) ==
 
+- Auth
+
+  - We only auth once with Twitter Oauth
+  - We need to store the auth somewhere that can be accessed
+    accross the Bot interface
+
 - Status
-
-  - A Status has an id, text, user_id and an optional body
-  - A Status can be have a body (json), and then can be read,
-  	therefore it can result in a:
-
-  	- Question
-  	- Order // For example, "Create a new bitcoin address"
-  	- Statements (They could be replied with random messages for now)
-
-  - A Status can be send
-
-  - A Status can also have an empty body, and needs few params
-    to be sent:
-
-    - text, optional: {in_reply_to_user_id}
 
   - There are many kinds of Questions
   - A Question can be answered, and then replied
@@ -27,7 +18,7 @@
 
   Status(optional: [text, json]);
 
-  Examples:
+- Examples:
 
   s = new Status("Hello World!");
   s.send()
