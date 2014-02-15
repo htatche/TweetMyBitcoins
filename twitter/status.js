@@ -37,19 +37,22 @@ var Status = function(args) {
   	return true;
   }
 
-  parent.send = function(auth, url, params) {
-  	deferred = Q.defer();
+  parent.send = function(url) {
+    var bot = this;
+    var params = {"status": parent.text};    
+  	var deferred = Q.defer();
 
-	  auth.oauth.post(url,
-                    auth.access_token,
-                    auth.secret_access_token,
-                    params,
-                    function(e,data,res) { 
-                      if (e) 
-                        return deferred.reject(e);                
-                      else
-                        return deferred.resolve(data);
-                    }
+	  bot.auth.oauth.post(url,
+                        bot.auth.access_token,
+                        bot.auth.secret_access_token,
+                        params,
+                        function(e,data,res) { 
+                          if (e) {
+                            deferred.reject(e);         
+                          } else {
+                            deferred.resolve(data);
+                          }
+                        }
 	  );  	
 
 	  return deferred.promise;

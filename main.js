@@ -4,31 +4,8 @@ var bot = new twitter.Bot();
 
 bot.authenticate();
 
-// var status = new bot.Status();
+str = Math.random().toString(36).substring(10);
+str2 = Math.random().toString(36).substring(15);
+str3 = Math.random().toString(36).substring(15);
 
-// debugger
-
-// var Auth = require("./auth.js");
-
-// var auth = new Auth();
-
-// var str = Math.random().toString(36).substring(10);
-// var url = "https://api.twitter.com/1.1/statuses/update.json";
-// var params = {"status": str};
-
-// var status = new bot.Status({text: str});
-
-// status.send(url, params).then(
-//   function(data) {
-//     console.log(data);
-//   },
-//   function(e) {
-//     console.log(e);
-//   }    
-// );
-
-
-// var bot = new Bot()
-// bot.authenticate()
-// var status = new bot.Status()
-// status.
+bot.say(str).say(str2).say(str3);
