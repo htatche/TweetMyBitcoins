@@ -4,8 +4,30 @@ var bot = new twitter.Bot();
 
 bot.authenticate();
 
-str = Math.random().toString(36).substring(10);
-str2 = Math.random().toString(36).substring(15);
-str3 = Math.random().toString(36).substring(15);
 
-bot.say(str).say(str2).say(str3);
+
+// var status = new bot.Status({params});
+
+// if (status.isQuestion()) {
+if (true) {	
+
+	// bot.ask(status.text).then(function(answer) {
+	// 	bot.reply(status_id, beautified_message)
+	// })
+
+	try {
+	  var question = new bot.Question("What is the balance of 1AM5xJLHAenvTdzRDh6rv5TUFJm84W4uvT");
+	} catch (e) {
+	  console.error(e);
+	  return;
+	}
+
+	question.answer().then(
+		function(answer) {
+			console.log(answer);
+			// bot.reply(status_id, beautified_message)
+		}
+	);
+
+}
+

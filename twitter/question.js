@@ -1,31 +1,48 @@
-var Question = function(status) {
-  var _this = this;
+var Q             = require("q"),
+    Answer        = require("./answer.js");
 
-  this.setType: function() {
-    if (status.text.match(/.*balance.*/))
-      _this.type = "balance";
-      return;
+var Question = function(str) {
+  var self = this;
 
-    if (status.text.match(/.*price.*/))
-      _this.type = "price";
-      return;      
+  this.setType = function() {
 
-    throw new Error("No valid question");
+    if (str.match(/.*balance.*/)) {
+      self.type = "balance";
+    } else if (str.match(/.*(price|value).*/i)) {
+      self.type = "price";
+    } else {
+      throw new Error("Unrecognizable question");
+    }
+
   }
 
-  _this.answer: function() {
-    var question_type = _this.type;
+  self.answer = function() {
+    var deferred = Q.defer();
+    var answer   = new Answer(self.type, str);
 
-    return new Answer(status.id, _this.type);
+    answer.find().then (
+      function(str) {
+        deferred.resolve(str);
+      },
+      function(e) {
+        deferred.resolve(e);
+      }      
+    )
+
+    return deferred.promise;
   }
 
-  _this.reply: function() {
-    _this.answer().send();
-  }
+  // self.reply = function() {
+  //   switch(self.type) {
+  //     case "balance":
+  //       getBalance("")
+  //   }
+  //   // self.answer().send();
+  // }
 
   this.setType();
 
-  return _this;
+  return self;
 }
 
 module.exports = Question;

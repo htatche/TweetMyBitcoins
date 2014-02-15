@@ -4,56 +4,6 @@ var OAuth = require("OAuth"),
     blockchain   = require('./blockchain.js');
     twitter_auth = require('./twitter_auth.js');   
 
-var Status = function(json) {
-  var _this = this;
-
-  _this.text = json.text;
-  _this.user_id = json.user_id;
-  _this.reply_to_id = json.in_reply_to;
-
-  _this.isQuestion = function() {
-    // Determine if it's a question
-    // regxp with What/How 
-    return true;
-  }
-
-  _this.send = function() {
-
-  }
-
-  return _this;
-}    
-
-var Question = function(status) {
-  var _this = this;
-
-  this.setType: function() {
-    if (status.text.match(/.*balance.*/))
-      _this.type = "balance";
-      return;
-
-    if (status.text.match(/.*price.*/))
-      _this.type = "price";
-      return;      
-
-    throw new Error("No valid question");
-  }
-
-  _this.answer: function() {
-    var question_type = _this.type;
-
-    return new Answer(status.id, _this.type);
-  }
-
-  _this.reply: function() {
-    _this.answer().send();
-  }
-
-  this.setType();
-
-  return _this;
-}
-
 exports.parseData = function(json) { 
 
   var status = new Status(json);  

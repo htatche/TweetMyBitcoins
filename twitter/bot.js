@@ -1,24 +1,26 @@
-var Auth 	 = require("./auth.js");
-var Status = require("./status.js");
+var Auth 	 		= require("./auth.js");
+var Status 		= require("./status.js");
+var Question 	= require("./question.js");
+var Answer 	 	= require("./answer.js");
 
 var Bot = function() {
-	var parent = this;
+	var self = this;
 
-	parent.authenticate = function() {
-		parent.auth = new parent.Auth();
-		parent.auth.create();
+	self.authenticate = function() {
+		self.auth = new self.Auth();
+		self.auth.create();
 
-		return parent.auth;
+		return self.auth;
 	}
 
-	parent.say = function(str) {
-		if (parent.auth == undefined)
+	self.say = function(str) {
+		if (self.auth == undefined)
 			throw new Error("You must authenticate first");
 
 		var url = "https://api.twitter.com/1.1/statuses/update.json",
-				status = new parent.Status({"text": str});
+				status = new self.Status({"text": str});
 
-		status.send.call(parent, url)
+		status.send.call(self, url)
 		.then(
 		  function(data) {
 		  	var json = JSON.parse(data);
@@ -29,12 +31,30 @@ var Bot = function() {
 		  }  		    
 		);			
 
-		return parent;
+		return self;
 	}	
+
+	self.ask = function(str) {
+		try {
+		  var question = new self.Question(str);
+		} catch (e) {
+		  console.error(e);
+		  return;
+		}
+
+		question.answer().then(
+			function(answer) {
+				console.log(answer);
+				// bot.reply(status_id, beautified_message)
+			}
+		);
+	}
 
 };
 
-Bot.prototype.Status = Status;
-Bot.prototype.Auth   = Auth;
+Bot.prototype.Auth   		= Auth;
+Bot.prototype.Status 		= Status;
+Bot.prototype.Question 	= Question;
+Bot.prototype.Answer 		= Answer;
 
 module.exports = Bot;
