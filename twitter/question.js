@@ -35,7 +35,7 @@ var Question = function(str) {
   // self.reply = function() {
   //   switch(self.type) {
   //     case "balance":
-  //       getBalance("")
+  //       getBalance("");
   //   }
   //   // self.answer().send();
   // }

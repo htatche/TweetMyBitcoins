@@ -1,3 +1,5 @@
+var Q 				= require("q");
+
 var Auth 	 		= require("./auth.js");
 var Status 		= require("./status.js");
 var Question 	= require("./question.js");
@@ -35,25 +37,34 @@ var Bot = function() {
 	}	
 
 	self.ask = function(str) {
+		var deferred = Q.defer();
+		var error;
+
 		try {
 		  var question = new self.Question(str);
 		} catch (e) {
-		  console.error(e);
-		  return;
+			deferred.reject(e);
+			return deferred.promise;
 		}
 
 		question.answer().then(
-			function(answer) {
-				console.log(answer);
-				// bot.reply(status_id, beautified_message)
-			}
+      function(str) {
+        deferred.resolve(str);
+      },
+      function(e) {
+        deferred.reject(e);
+      } 			
 		);
+
+		return deferred.promise;
 	}
+
+	self.Status = Status;
+	self.Status.prototype.parent = self;
 
 };
 
 Bot.prototype.Auth   		= Auth;
-Bot.prototype.Status 		= Status;
 Bot.prototype.Question 	= Question;
 Bot.prototype.Answer 		= Answer;
 
