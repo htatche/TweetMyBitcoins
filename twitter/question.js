@@ -6,7 +6,7 @@ var Question = function(str) {
 
   this.setType = function() {
 
-    if (str.match(/.*balance.*/)) {
+    if (str.match(/.*balance.*/i)) {
       self.type = "balance";
     } else if (str.match(/.*(price|value).*/i)) {
       self.type = "price";
@@ -31,14 +31,6 @@ var Question = function(str) {
 
     return deferred.promise;
   }
-
-  // self.reply = function() {
-  //   switch(self.type) {
-  //     case "balance":
-  //       getBalance("");
-  //   }
-  //   // self.answer().send();
-  // }
 
   this.setType();
 

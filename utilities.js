@@ -9,6 +9,8 @@ exports.extractBitcoinAddress = function(str) {
   }
 }
 
+
+
 // var answerDirectMessage = function(id, user_id, msg) {
 //   var url = "https://api.twitter.com/1.1/direct_messages/new.json";
 //   var params = "?user_id=" + user_id + "&text=" + encodeURIComponent(msg);

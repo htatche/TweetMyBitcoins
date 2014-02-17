@@ -33,14 +33,11 @@ var Answer = function(question_type, str) {
 		switch (question_type) {
 			case "balance": 		  
 				self.findBalanceAnswer().then(
-					function(str) {
-						deferred.resolve(str);
-					},
-					function(e) {
-						deferred.reject(e);
-					}					
+					function(str) {	deferred.resolve(str); },
+					function(e)   { deferred.reject(e); 	 }					
 				);
 				break;
+
 			default:
 				var e = new Error("Not user petition");			
 				deferred.reject(e);

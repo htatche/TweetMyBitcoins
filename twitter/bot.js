@@ -15,6 +15,56 @@ var Bot = function() {
 		return self.auth;
 	}
 
+	self.listen = function() {
+		if (self.auth == undefined)
+			throw new Error("You must authenticate first");
+
+		var url = "https://userstream.twitter.com/1.1/user.json";
+	  var req = self.auth.oauth.get(
+	  						url,
+						  	self.auth.access_token,
+						    self.auth.secret_access_token
+						  );  
+
+	  req.addListener("response", function (res) {
+
+	    res.setEncoding("utf8");
+
+	    res.addListener("data", function (data) {
+	    	console.log("I received data !");
+	    	console.log(data);
+
+	    	var event = self.detectEvent(data);
+
+	    	if (event != undefined) {
+	    		var json = JSON.parse(data);
+	    		self[event](json);
+	    	}
+
+	    });
+
+	    res.addListener("end", function () {
+	      throw new Error("I stopped listening.");
+	    });
+
+	  }).end();		
+	}
+
+	self.on = function(evt, callback) {
+		self[evt] = callback;
+	}
+
+	self.detectEvent = function(data) {
+      try {
+        var json = JSON.parse(data);
+      } catch (e) { return undefined; }        
+
+      if (json.hasOwnProperty("text"))
+        return "new_status";
+      else
+      	return undefined; 
+	}
+
 	self.say = function(str) {
 		if (self.auth == undefined)
 			throw new Error("You must authenticate first");

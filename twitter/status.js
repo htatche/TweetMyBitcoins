@@ -34,7 +34,9 @@ var Status = function(args) {
   }
 
   self.isQuestion = function() {
-  	return true;
+    return (self.text.match(/.*(What|How much).*/i))
+    ? true
+    : false
   }
 
   self.send = function(url, params) {
