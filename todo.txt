@@ -24,7 +24,7 @@
 
         (at) (btce|bitstamp|btcchina)                   -> Reference
 
-        (in) (dollars|euros|yuans|guiness pints)        -> Unit
+        (in) (dollars|euros|yuans|guiness pints)        -> Unit    
 
     ; Balance of an address
     
@@ -58,6 +58,12 @@
 
       Example: How much has been (transferred) with (hash)
                What is the (total input) of the (transaction) (hash)
+
+    ; Unit conversion
+    
+      - (QUESTION WORDS)
+      - (is) (value) (UNIT)
+      - in (UNIT)            
 
 
 - Status

@@ -1,10 +1,15 @@
 var Q             = require("q"),
+    Status        = require("./status.js"),
     Answer        = require("./answer.js");
 
-var Question = function(str) {
+var Question = function(args) {
   var self = this;
 
-  this.setType = function() {
+  self.args = args || {};
+
+  var str = self.args.body.text;
+
+  self.setType = function() {
 
     if (str.match(/.*balance.*/i)) {
       self.type = "balance";
@@ -32,9 +37,13 @@ var Question = function(str) {
     return deferred.promise;
   }
 
-  this.setType();
+  self.verifyArgs(); // Status
+  self.setType();
 
   return self;
 }
+
+Question.prototype = new Status();
+Question.prototype.constructor = Question;
 
 module.exports = Question;

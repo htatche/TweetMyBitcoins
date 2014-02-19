@@ -12,7 +12,7 @@ var Bot = function() {
 		self.auth = new self.Auth();
 		self.auth.create();
 
-		return self.auth;
+		return self;
 	}
 
 	self.listen = function() {
@@ -31,9 +31,8 @@ var Bot = function() {
 	    res.setEncoding("utf8");
 
 	    res.addListener("data", function (data) {
-	    	console.log("I received data !");
 	    	console.log(data);
-
+	    	
 	    	var event = self.detectEvent(data);
 
 	    	if (event != undefined) {
@@ -48,21 +47,33 @@ var Bot = function() {
 	    });
 
 	  }).end();		
+
+	  return self;
 	}
 
 	self.on = function(evt, callback) {
 		self[evt] = callback;
+
+		return self;
 	}
 
 	self.detectEvent = function(data) {
-      try {
-        var json = JSON.parse(data);
-      } catch (e) { return undefined; }        
+		var json, status;
 
-      if (json.hasOwnProperty("text"))
-        return "new_status";
-      else
-      	return undefined; 
+    try {
+    	json = JSON.parse(data);
+    } catch (e) { return undefined; }  
+
+		if (!json.hasOwnProperty("text"))
+			return undefined;
+
+		status = new Status({"body": json});
+
+		if (status.isQuestion()) {
+			return "question";
+		} else {
+			return undefined;
+		}	
 	}
 
 	self.say = function(str) {
@@ -108,6 +119,9 @@ var Bot = function() {
 
 		return deferred.promise;
 	}
+
+	self.Auth = Auth;
+	self.Auth.prototype.parent = self;	
 
 	self.Status = Status;
 	self.Status.prototype.parent = self;
