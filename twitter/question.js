@@ -5,9 +5,9 @@ var Q             = require("q"),
 var Question = function(args) {
   var self = this;
 
-  self.args = args || {};
+  var args = args || {};
 
-  var str = self.args.body.text;
+  var str = args.body.text;
 
   self.setType = function() {
 
@@ -37,7 +37,7 @@ var Question = function(args) {
     return deferred.promise;
   }
 
-  self.verifyArgs(); // Status
+  self.verifyArgs(args); // Status
   self.setType();
 
   return self;

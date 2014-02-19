@@ -2,32 +2,31 @@ var Q = require("q");
 
 var Status = function(args) {
   var self = this;
-  self.args = args || {};
+  var args = args || {};
 
-  self.verifyArgs = function() {
+  self.verifyArgs = function(args) {
 
-	  if (self.args.hasOwnProperty("text") && self.args.hasOwnProperty("body"))
+	  if (args.hasOwnProperty("text") && args.hasOwnProperty("body"))
 	  	throw new Error("Arguments list length wrong");
 
-	  if (self.args.hasOwnProperty("text")) {
-	  	if (typeof self.args.text == "string")
-		  	self.text = self.args.text;
+	  if (args.hasOwnProperty("text")) {
+	  	if (typeof args.text == "string")
+		  	self.text = args.text;
 		  else
 		  	throw new Error("Text must be a String");
 		}
 
-	  if (self.args.hasOwnProperty("body")) {
-	  	if (typeof self.args.body == "object")
-		  	self.setBodyParams();
+	  if (args.hasOwnProperty("body")) {
+	  	if (typeof args.body == "object")
+		  	self.setBodyParams(args);
 		  else
 		  	throw new Error("Body must be an Object");
 		}		
 
   }
 
-  self.setBodyParams = function() {
-    debugger
-  	self.body = self.args.body;
+  self.setBodyParams = function(args) {
+  	self.body = args.body;
 
   	self.id 	= self.body.id_str;
   	self.text = self.body.text;		  	
@@ -79,7 +78,7 @@ var Status = function(args) {
     return self;
   }
 
-  self.verifyArgs();
+  self.verifyArgs(args);
 
   return self;
 }

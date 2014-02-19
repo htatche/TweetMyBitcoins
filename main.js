@@ -9,7 +9,7 @@ bot
     .listen()
     .on("question", function (json) { 
       var   question = new bot.Question({"body": json});
-      debugger
+
       question
               .answer()
               .then(
