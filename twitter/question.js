@@ -15,6 +15,8 @@ var Question = function(args) {
       self.type = "balance";
     } else if (str.match(/.*(price|value).*/i)) {
       self.type = "price";
+    } else if (str.match(/.*(price|value).*/i)) {
+      self.type = "price";      
     } else {
       throw new Error("Unrecognizable question");
     }

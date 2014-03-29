@@ -1,4 +1,4 @@
-== Specs (brainstorming state) ==
+== BITCOIN possible Library specs ==
 
 - Question
 
@@ -27,7 +27,7 @@
         (in) (dollars|euros|yuans|guiness pints)        -> Unit    
 
     ; Balance of an address
-    
+      
       - (QUESTION WORD)
       - is the (balance)
       - of (xxxxxx)     
@@ -64,47 +64,3 @@
       - (QUESTION WORDS)
       - (is) (value) (UNIT)
       - in (UNIT)            
-
-
-- Status
-
-  - There are many kinds of Questions
-  - A Question can be answered, and then replied
-
-  - An Answer is a Status that only contains few params
-    but doesn't have a body (json)
-
-  - An Answer can be sent since it is a Status
-
-  Status(optional: [text, json]);
-
-- Examples:
-
-  s = new Status("Hello World!");
-  s.send()
-
-  s = new Status(json);
-  s.send() 			  // Throws a "Duplicated Status"
-
-  answer = s.answer() // Returns an Answer() Object, which is a Status()
-                      // object with only a text and in_reply_to_status_id 
-                      // variables setted
-
-  answer.reply() 	    // Calls Status.send()
-  answer.privateReply() // Sends a Direct Message to User instead
-
-  // We can also directly create an Answer to a Question
-  answer = new Answer(question)
-
-  // Later on we could add more reply options
-  answer.retweet()
-  answer.email()
-  answer.fb()
-
-  // What about chaining them ?
-  answer.reply().email().fb().send() // Each one returns the answer object
-           |       |      |     |
-        Each one fires asynchronously
-
-  // More fun 
-  new Question(answer.question)
